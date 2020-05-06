@@ -1,2 +1,1 @@
-# new4youbot
-new4YouBot
+# news4you
