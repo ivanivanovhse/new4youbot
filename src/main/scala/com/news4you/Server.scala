@@ -6,12 +6,12 @@ import com.news4you.bot.News4YouBot
 import com.news4you.config._
 import fs2.Stream
 import zio._
-import zio.clock.Clock
 import zio.interop.catz._
-
-object Main extends App {
-    type AppTask[A] = RIO[Layers.News4YouEnv with Clock, A]
-
+import zio.clock.Clock
+object Server extends App {
+    type AppTask[A] = RIO[Layers.News4YouEnv , A]
+   // type Task[A] = RIO[Layers.News4YouEnv, A]
+   // type BotTask[A] = RIO[Clock with HttpClient, A]
     override def run(args: List[String]): ZIO[ZEnv, Nothing, Int] = {
         val prog =
             for {
@@ -24,8 +24,12 @@ object Main extends App {
         prog.provideLayer(Layers.live.appLayer).orDie
     }
 
-    def runTelegramBot[R <: Clock](token: String) = {
-        type Task[A] = RIO[R, A]
+    def runTelegramBot[R<:Clock](token: String) = {
+       // type Task[A] = UIO[ A]
+
+       // type Task[A] = RIO[R, A]
+
+       // type BotTask[A] = RIO[R, A]
 
         ZIO.runtime[R].flatMap { implicit rts =>
             Stream

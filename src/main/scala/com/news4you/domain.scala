@@ -3,6 +3,10 @@ package com.news4you
 import io.circe.Decoder
 import io.circe.generic.semiauto._
 
+case class PageRequest(pageLink: String, childNumber: Int = 5)
+
+case class Document(link: String, content: String)
+
 final case class TodoId(value: Long) extends AnyVal
 
 final case class TodoPayload(
