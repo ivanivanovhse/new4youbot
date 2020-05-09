@@ -1,13 +1,10 @@
 package com.news4you
 
-import canoe.api._
-import cats.effect.ExitCode
-import com.news4you.bot.News4YouBot
 import com.news4you.config._
-import fs2.Stream
+import com.news4you.telegram.TelegramClient.TelegramClient
 import zio._
-import zio.interop.catz._
-import zio.clock.Clock
+import zio.console.putStrLn
+
 object Server extends App {
     type AppTask[A] = RIO[Layers.News4YouEnv , A]
    // type Task[A] = RIO[Layers.News4YouEnv, A]
@@ -17,14 +14,30 @@ object Server extends App {
             for {
                 cfg <- ZIO.access[ConfigProvider](_.get)
                 _ <- logging.log.info(s"Starting with $cfg")
-                botConfig = cfg.botConfig
-                _ <- runTelegramBot(botConfig.token)
+                canoe<- ZIO.access[TelegramClient](_.get)
+                _ <-canoe.start.ignore.as(0)/*.fork*/
+              /*  botConfig = cfg.botConfig
+                canoeClient <-makeCanoeClient(botConfig.token)
+                _ <- runTelegramBot(botConfig.token)*/
             } yield 0
 
-        prog.provideLayer(Layers.live.appLayer).orDie
+        prog.provideLayer(Layers.live.appLayer).catchAll(error => putStrLn(error.toString).as(1))/*.foldM(
+           err => putStrLn(s"Execution failed with: ${err.getMessage}") *> ZIO.succeed(1),
+           _ => ZIO.succeed(0)
+       )*//*.orDie*//*.orDie*/
     }
 
-    def runTelegramBot[R<:Clock](token: String) = {
+
+   /* private def makeCanoeClient(token: String): UIO[TaskManaged[CanoeClient[Task]]] =
+        ZIO
+            .runtime[Any]
+            .map { implicit rts =>
+                CanoeClient
+                    .global[Task](token)
+                    .toManaged
+            }*/
+
+/*    def runTelegramBot[R<:Clock](token: String) = {
        // type Task[A] = UIO[ A]
 
        // type Task[A] = RIO[R, A]
@@ -39,5 +52,5 @@ object Server extends App {
                 }
                 .compile.drain.as(ExitCode.Success)
         }
-    }
+    }*/
 }

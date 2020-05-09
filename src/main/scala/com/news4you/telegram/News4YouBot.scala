@@ -1,4 +1,5 @@
-package com.news4you.bot
+/*
+package com.news4you.telegram
 import canoe.api.{Scenario, TelegramClient, _}
 import canoe.models.Chat
 import canoe.syntax._
@@ -27,3 +28,4 @@ object News4YouBot {
 
     }
 }
+*/

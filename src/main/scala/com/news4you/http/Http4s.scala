@@ -10,7 +10,7 @@ import zio.interop.catz._
 import zio.logging.Logger
 
 /*private[http] final*/ case class Http4s(rootUrl: String, logger: Logger[String], client: Client[Task])
-    extends HttpClient.Service[Task] with Http4sClientDsl[Task] {
+    extends HttpClient.Service with Http4sClientDsl[Task] {
 
     def get[T](resource: String, parameters: Map[String, String])
               (implicit d: Decoder[T]): Task[T] = {
